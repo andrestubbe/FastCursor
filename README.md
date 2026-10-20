@@ -48,8 +48,9 @@ public class QuickStart {
 - [Code Examples](#code-examples)
   - [1. Thread-Scoped Cursor](#1-thread-scoped-cursor)
   - [2. Window-Bound Cursor (HWND)](#2-window-bound-cursor-hwnd)
-  - [3. Desktop Rectangular Clipping](#3-desktop-rectangular-clipping)
-  - [4. Cursor Visibility (Show / Hide)](#4-cursor-visibility-show--hide)
+  - [3. Desktop Rectangular & Window Clipping](#3-desktop-rectangular--window-clipping)
+  - [4. Querying Active Cursor Handle](#4-querying-active-cursor-handle)
+  - [5. Cursor Visibility (Show / Hide)](#5-cursor-visibility-show--hide)
 - [Interactive Demonstrations](#interactive-demonstrations)
 - [Installation](#installation)
   - [Option 1: Maven (Recommended)](#option-1-maven-recommended)
@@ -114,7 +115,8 @@ Standard Java cursor handling via `java.awt.Cursor` or JavaFX is plagued by seve
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                    fastcursor.FastCursor                    │
-│      (Facade: set, setForWindow, clip, unclip, show, hide)  │
+│ (Facade: set, get, setForWindow, clip, clipToWindow,        │
+│          unclip, show, hide)                                │
 └──────────────────────────────┬──────────────────────────────┘
                                │
                                ▼
@@ -131,6 +133,7 @@ Standard Java cursor handling via `java.awt.Cursor` or JavaFX is plagued by seve
 │   • SetCursor              • LoadCursorW                    │
 │   • SetClassLongPtrW       • ClipCursor                     │
 │   • ShowCursor             • GetCursor                      │
+│   • GetWindowRect                                           │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -186,19 +189,38 @@ long hwnd = 0x12345678L; // Native Win32 window handle
 FastCursor.setForWindow(hwnd, CursorType.HAND);
 ```
 
-### 3. Desktop Rectangular Clipping
+### 3. Desktop Rectangular & Window Clipping
 
 ```java
 import fastcursor.FastCursor;
 
-// Lock mouse cursor to a 500x500 box on screen
+// 1. Lock mouse cursor to a 500x500 box on screen
 FastCursor.clip(100, 100, 600, 600);
 
-// Release cursor confinement
+// 2. Or confine cursor directly to window screen bounds (HWND)
+long hwnd = 0x12345678L;
+FastCursor.clipToWindow(hwnd);
+
+// 3. Release cursor confinement across all monitors
 FastCursor.unclip();
 ```
 
-### 4. Cursor Visibility (Show / Hide)
+### 4. Querying Active Cursor Handle
+
+```java
+import fastcursor.FastCursor;
+import java.lang.foreign.MemorySegment;
+
+// Save current native cursor handle
+MemorySegment previousCursor = FastCursor.get();
+
+// Mutate cursor temporarily
+FastCursor.set(CursorType.WAIT);
+
+// ... perform tasks ...
+```
+
+### 5. Cursor Visibility (Show / Hide)
 
 ```java
 import fastcursor.FastCursor;
@@ -294,10 +316,11 @@ Download the latest compiled JARs directly to add them to your classpath:
 
 ## Platform Support
 
-| Platform | Architecture | Status | Subsystem / Mechanism |
+| Platform | Architecture | Status | Notes |
 |:---|:---:|:---:|:---|
-| **Windows 10 / 11** | x64 | ✅ Fully Supported | Win32 `user32.dll` via Java 21+ Project Panama FFM |
-| **Linux** | x64 / AArch64 | 🚧 Planned | X11 / Wayland Pointer Shape Protocol |
+| **Windows 10 / 11** | `x64` | ✅ Fully Supported | Win32 `user32.dll` via Java 21+ Project Panama FFM |
+| **Linux (X11 / Wayland)** | `x64` / `AArch64` | 🚧 Planned | X11 `XFixes` / Wayland Pointer Shape Protocol |
+| **macOS (Sonoma+)** | `Apple Silicon` / `x64` | 🚧 Planned | Cocoa `NSCursor` / CoreGraphics Direct Pointer API |
 
 ---
 
