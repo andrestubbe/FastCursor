@@ -1,9 +1,9 @@
-package demo;
+package fastcursor;
 
 import fastcursor.CursorType;
 import fastcursor.FastCursor;
 
-public class CursorCycleDemo {
+public class Demo {
 
     public static void main(String[] args) throws InterruptedException {
         System.out.println("==================================================");

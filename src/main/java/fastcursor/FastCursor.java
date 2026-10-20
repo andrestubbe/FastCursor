@@ -49,6 +49,15 @@ public final class FastCursor {
     }
 
     /**
+     * Returns the native Win32 cursor handle ({@code HCURSOR}) of the calling thread.
+     *
+     * @return MemorySegment wrapping the native HCURSOR pointer address
+     */
+    public static MemorySegment get() {
+        return NativeUser32Cursor.getCursor();
+    }
+
+    /**
      * Shows the mouse cursor.
      */
     public static void show() {
@@ -70,13 +79,26 @@ public final class FastCursor {
      * @param top    Top screen pixel
      * @param right  Right screen pixel
      * @param bottom Bottom screen pixel
+     * @return true if clipping succeeded, false otherwise
      */
     public static boolean clip(int left, int top, int right, int bottom) {
         return NativeUser32Cursor.clipCursor(left, top, right, bottom);
     }
 
     /**
+     * Confines mouse cursor movements to the exact screen bounding rectangle of a native window (HWND).
+     *
+     * @param hwnd Native Win32 window handle
+     * @return true if clipping succeeded, false otherwise
+     */
+    public static boolean clipToWindow(long hwnd) {
+        return NativeUser32Cursor.clipToWindow(hwnd);
+    }
+
+    /**
      * Releases cursor confinement and restores free desktop movement.
+     *
+     * @return true if unclipped successfully, false otherwise
      */
     public static boolean unclip() {
         return NativeUser32Cursor.unclipCursor();

@@ -32,6 +32,13 @@ Binds a standard cursor permanently to a native Win32 window (`HWND`). Windows a
   - `type` - Standard cursor shape.
 - **Returns:** `true` on success, `false` otherwise.
 
+### `get`
+```java
+public static MemorySegment get()
+```
+Returns the native Win32 cursor handle (`HCURSOR`) of the calling thread.
+- **Returns:** `MemorySegment` wrapping the native `HCURSOR` pointer address.
+
 ### `show`
 ```java
 public static void show()
@@ -54,6 +61,15 @@ Confines mouse cursor movements to a specific rectangle on the primary desktop.
   - `top` - Top screen pixel.
   - `right` - Right screen pixel.
   - `bottom` - Bottom screen pixel.
+- **Returns:** `true` if clipping succeeded, `false` otherwise.
+
+### `clipToWindow`
+```java
+public static boolean clipToWindow(long hwnd)
+```
+Confines mouse cursor movements to the exact screen bounding rectangle of a native window (`HWND`).
+- **Parameters:**
+  - `hwnd` - Native Win32 window handle.
 - **Returns:** `true` if clipping succeeded, `false` otherwise.
 
 ### `unclip`
@@ -94,5 +110,5 @@ public enum CursorType
 
 Internal package-private engine managing `java.lang.foreign` Linker calls to `user32.dll`.
 
-- Automatically binds `SetCursor`, `GetCursor`, `LoadCursorW`, `ShowCursor`, `ClipCursor`, and `SetClassLongPtrW` (with fallback to `SetClassLongW`).
+- Automatically binds `SetCursor`, `GetCursor`, `LoadCursorW`, `ShowCursor`, `ClipCursor`, `GetWindowRect`, and `SetClassLongPtrW` (with fallback to `SetClassLongW`).
 - Maintains an internal concurrent lookup cache `CURSOR_CACHE` to avoid repeated `LoadCursorW` Win32 allocations.

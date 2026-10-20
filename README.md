@@ -51,7 +51,8 @@ public class QuickStart {
   - [3. Desktop Rectangular & Window Clipping](#3-desktop-rectangular--window-clipping)
   - [4. Querying Active Cursor Handle](#4-querying-active-cursor-handle)
   - [5. Cursor Visibility (Show / Hide)](#5-cursor-visibility-show--hide)
-- [Interactive Demonstrations](#interactive-demonstrations)
+- [Performance Benchmarks](#performance-benchmarks)
+- [Technical Demos & Benchmarks](#technical-demos--benchmarks)
 - [Installation](#installation)
   - [Option 1: Maven (Recommended)](#option-1-maven-recommended)
   - [Option 2: Gradle (via JitPack)](#option-2-gradle-via-jitpack)
@@ -234,18 +235,26 @@ FastCursor.show();
 
 ---
 
-## Interactive Demonstrations
+## Performance Benchmarks
 
-FastCursor ships with an interactive demo that cycles through all Win32 system cursors every 3 seconds:
+FastCursor is rigorously benchmarked via **OpenJDK JMH** to guarantee zero JVM allocation and sub-microsecond Win32 dispatch latencies:
 
-| Demo | Source Code | Launcher | Description |
-|:---|:---|:---|:---|
-| **Cursor Cycle Demo** | [`CursorCycleDemo.java`](examples/src/main/java/demo/CursorCycleDemo.java) | `run-demo.bat` | Cycles through all Win32 system cursor shapes every 3 seconds directly over the console window. |
+| Benchmark / Operation | Throughput (ops/ms) | Ops per Second | Latency |
+|:---|:---:|:---:|:---:|
+| **`benchmarkSetCursorCached`** (IDC handle resolution + `SetCursor`) | **~2,088 ops/ms** | **> 2.08 Million** | **< 480 ns** |
+| **`benchmarkSetCursorSwitch`** (Active shape alternation) | **~1,194 ops/ms** | **> 1.19 Million** | **< 830 ns** |
+| **`benchmarkUnclip`** (Win32 `ClipCursor(NULL)`) | **~1,374 ops/ms** | **> 1.37 Million** | **< 720 ns** |
 
-Run the demo instantly via terminal:
-```cmd
-run-demo.bat
-```
+*Measured on Windows 11 (x64), JDK 21.0.12.1. Pure Java 21+ Project Panama FFM direct downcalls with 0 bytes GC heap allocation.*
+
+---
+
+## Technical Demos & Benchmarks
+
+| Case | Java Example | Launcher | Description |
+|---|---|---|---|
+| **Interactive Terminal Demo** | [Demo.java](examples/Demo/src/main/java/fastcursor/Demo.java) | `run-demo.bat` | Cycles through all Win32 system cursor shapes every 3 seconds directly over the console window. |
+| **JMH Microbenchmark Suite** | [Benchmark.java](examples/Benchmark/src/main/java/fastcursor/benchmark/Benchmark.java) | `run-benchmark.bat` | JMH microbenchmark suite measuring Win32 downcall throughput and handle cache performance. |
 
 ---
 

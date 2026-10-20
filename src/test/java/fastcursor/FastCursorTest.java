@@ -36,5 +36,12 @@ class FastCursorTest {
         // Unclip test
         boolean unclipped = FastCursor.unclip();
         assertTrue(unclipped, "Unclipping cursor should return true");
+
+        // Get cursor test
+        assertNotNull(FastCursor.get(), "Current cursor segment should not be null");
+
+        // Clip to invalid hwnd test (should return false gracefully)
+        assertFalse(FastCursor.clipToWindow(0), "clipToWindow(0) should return false");
+        assertFalse(FastCursor.clipToWindow(-1), "clipToWindow(-1) should return false");
     }
 }

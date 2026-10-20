@@ -15,8 +15,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Built-in concurrent handle caching to eliminate redundant system calls for identical IDC resource IDs.
 - **Unified FastCursor API (`FastCursor`)**:
   - `FastCursor.set(CursorType)`: Immediately updates the current thread cursor to standard shapes.
+  - `FastCursor.get()`: Retrieves the native `HCURSOR` handle of the calling thread.
   - `FastCursor.setForWindow(long hwnd, CursorType)`: Permanently binds standard cursor shapes to specific Win32 window handles (`HWND`) via class attribute modification.
   - `FastCursor.clip(int left, int top, int right, int bottom)`: Locks mouse cursor movements to an explicit bounding box on screen.
+  - `FastCursor.clipToWindow(long hwnd)`: Locks mouse cursor movements to the exact desktop boundaries of a given window handle.
   - `FastCursor.unclip()`: Restores unrestricted cursor movements across all monitors.
   - `FastCursor.show()` / `FastCursor.hide()`: Controls visibility of the mouse cursor.
 - **Cursor Type Enumeration (`CursorType`)**: Complete Win32 IDC resource mapping (`ARROW`, `IBEAM`, `WAIT`, `CROSS`, `HAND`, `SIZE_ALL`, `SIZE_WE`, `SIZE_NS`, `SIZE_NWSE`, `SIZE_NESW`, `NO`, `HELP`, `UP_ARROW`).
