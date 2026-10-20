@@ -8,9 +8,9 @@
 
 ---
 
-**🎯 Ultra-fast native Win32 cursor, pointer shape, and rectangular screen clipping management for Java 21+ via Foreign Function & Memory (FFM).**
+**🎯 Ultra-fast native Win32 cursor and pointer shape management for Java 21+ via Foreign Function & Memory (FFM).**
 
-**FastCursor** replaces bulky AWT abstractions and legacy JNI DLL wrappers with direct, sub-microsecond Win32 `user32.dll` system calls. It offers instant thread cursor mutation, permanent window-class (`HWND`) cursor binding, and hardware-accelerated desktop clipping with zero native compilation.
+**FastCursor** replaces bulky AWT abstractions and legacy JNI DLL wrappers with direct, sub-microsecond Win32 `user32.dll` system calls. It offers instant thread cursor mutation, permanent window-class (`HWND`) cursor binding on hover, handle inspection (`get()`), and cursor visibility controls with zero native compilation.
 
 ---
 
@@ -25,11 +25,11 @@ public class QuickStart {
         // 1. Immediately change active thread cursor to WAIT spinner
         FastCursor.set(CursorType.WAIT);
 
-        // 2. Lock cursor into a 500x500 box (ideal for games & precision tools)
-        FastCursor.clip(100, 100, 600, 600);
+        // 2. Query native Win32 HCURSOR memory segment
+        var hCursor = FastCursor.get();
+        System.out.println("Active HCURSOR: " + hCursor);
 
-        // 3. Release confinement & restore default arrow
-        FastCursor.unclip();
+        // 3. Restore default arrow
         FastCursor.set(CursorType.ARROW);
     }
 }
@@ -48,9 +48,8 @@ public class QuickStart {
 - [Code Examples](#code-examples)
   - [1. Thread-Scoped Cursor](#1-thread-scoped-cursor)
   - [2. Window-Bound Cursor (HWND)](#2-window-bound-cursor-hwnd)
-  - [3. Desktop Rectangular & Window Clipping](#3-desktop-rectangular--window-clipping)
-  - [4. Querying Active Cursor Handle](#4-querying-active-cursor-handle)
-  - [5. Cursor Visibility (Show / Hide)](#5-cursor-visibility-show--hide)
+  - [3. Querying Active Cursor Handle](#3-querying-active-cursor-handle)
+  - [4. Cursor Visibility (Show / Hide)](#4-cursor-visibility-show--hide)
 - [Performance Benchmarks](#performance-benchmarks)
 - [Technical Demos & Benchmarks](#technical-demos--benchmarks)
 - [Installation](#installation)
@@ -70,7 +69,7 @@ Standard Java cursor handling via `java.awt.Cursor` or JavaFX is plagued by seve
 
 - **Missing System Cursor Shapes**: Standard Java only maps a tiny subset of legacy cursors. Essential Windows cursors like `IDC_APPSTARTING`, `IDC_HELP`, or `IDC_SIZEALL` are either inconsistent or completely missing.
 - **No Window-Level Class Binding**: AWT requires continuous hover listening. If the JVM Event Dispatch Thread (EDT) suffers a latency spike, the cursor freezes or exhibits jitter.
-- **Zero Clipping Support**: AWT provides no way to confine the cursor to a specific screen bounding box via Win32 `ClipCursor` (critical for first-person cameras, canvas panning, and precision dragging).
+- **Missing Direct Handle Access**: Standard APIs do not expose the underlying Win32 `HCURSOR` handle needed for integration with low-level graphic APIs or native window frames.
 - **The DLL / JNI Overhead Dilemma**: Traditional native workarounds rely on heavyweight JNA wrappers or custom C++ DLLs that require cumbersome compilation, extraction, and platform-specific deployments.
 
 **FastCursor** circumvents all these limitations through direct **Java 21+ Panama FFM (Foreign Function & Memory)** calls backed by **FastCore**:
@@ -79,7 +78,7 @@ Standard Java cursor handling via `java.awt.Cursor` or JavaFX is plagued by seve
 |:---|:---|:---|:---|
 | **Underlying Mechanism** | AWT Peer abstraction | External C/C++ DLLs | **Direct `user32.dll` System Calls** |
 | **Native DLL Required** | No | Yes (must be compiled & extracted) | **No (Zero DLL / Zero JNI)** |
-| **Screen Rect Clipping** | ❌ Not supported | ⚠️ Manual wrapper required | **✅ Native `ClipCursor` / `unclip`** |
+| **Direct HCURSOR Query** | ❌ Not exposed | ⚠️ Complex JNI bridge | **✅ Native `FastCursor.get()`** |
 | **Window Class Binding** | ❌ Event-polling only | ⚠️ Complex JNI bridge | **✅ Native `SetClassLongPtrW` (HWND)** |
 | **Invocation Latency** | ~2–5 ms (EDT dispatch) | ~50–100 µs (JNI boundary) | **< 1 µs (Direct MethodHandle)** |
 | **Preloaded Handle Cache** | No | Manual implementation | **✅ Built-in Concurrent Cache** |
@@ -90,7 +89,7 @@ Standard Java cursor handling via `java.awt.Cursor` or JavaFX is plagued by seve
 
 - ⚡ **Zero JNI / Zero External DLLs**: Pure Java 21+ Project Panama talking directly to Windows `user32.dll`. No C++ compiler needed.
 - 🎯 **Thread & Window Scoped Cursors**: Instantly switch the active thread cursor or register class-level cursor shapes (`SetClassLongPtrW`) per `HWND` so Windows applies them natively on hover.
-- 🔒 **Screen Rect Clipping**: Lock the mouse cursor to custom desktop bounding boxes via `ClipCursor` (ideal for FPS games, drag controls, and region tools).
+- 🔍 **Native Handle Inspection**: Retrieve the calling thread's active `HCURSOR` address directly via `FastCursor.get()`.
 - 🗲 **Sub-Microsecond Latency**: Built-in concurrent handle caching avoids redundant `LoadCursorW` Win32 calls.
 - 🛡️ **Fail-Safe Fallbacks**: Pure downcall handles with zero JVM crashes, memory leaks, or GC allocations.
 
@@ -98,9 +97,9 @@ Standard Java cursor handling via `java.awt.Cursor` or JavaFX is plagued by seve
 
 ## Real-World Use Cases
 
-- 🎮 **FPS Games & 3D Viewports ([FastVulkan](https://github.com/andrestubbe/FastVulkan))**: Confinement of the cursor inside the window viewport via `clip()` to prevent accidental clicks onto second monitors during mouselook.
 - ✂️ **Desktop Snipping & Region Select ([FastScreenCapture](https://github.com/andrestubbe/FastScreenCapture))**: Instant switch to high-precision crosshair (`IDC_CROSS`) with zero frame delay.
 - 🎨 **Canvas, Diagramming & CAD ([FastGUI](https://github.com/andrestubbe/FastGUI))**: Native resize pointers (`IDC_SIZEWE`, `IDC_SIZENS`, `IDC_SIZENWSE`, `IDC_SIZEALL`) that feel 100% native and responsive even during heavy background rendering.
+- 🪟 **Window Hover Feedback ([FastWindow](https://github.com/andrestubbe/FastWindow))**: Bind custom cursors per window handle (`setForWindow`) for effortless interaction cues.
 - ⏳ **Background Task Indication**: Immediate system spinner (`IDC_WAIT` / `IDC_APPSTARTING`) triggered on the calling thread without EDT queue contention.
 
 ---
@@ -110,14 +109,13 @@ Standard Java cursor handling via `java.awt.Cursor` or JavaFX is plagued by seve
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │                       Your Application                      │
-│            (Games, Editors, Snipping Tools, Canvas)         │
+│            (Editors, Snipping Tools, Canvas, UI)            │
 └──────────────────────────────┬──────────────────────────────┘
                                │
                                ▼
 ┌─────────────────────────────────────────────────────────────┐
 │                    fastcursor.FastCursor                    │
-│ (Facade: set, get, setForWindow, clip, clipToWindow,        │
-│          unclip, show, hide)                                │
+│           (Facade: set, setForWindow, get, show, hide)       │
 └──────────────────────────────┬──────────────────────────────┘
                                │
                                ▼
@@ -132,9 +130,8 @@ Standard Java cursor handling via `java.awt.Cursor` or JavaFX is plagued by seve
 ┌─────────────────────────────────────────────────────────────┐
 │                     Windows user32.dll                      │
 │   • SetCursor              • LoadCursorW                    │
-│   • SetClassLongPtrW       • ClipCursor                     │
-│   • ShowCursor             • GetCursor                      │
-│   • GetWindowRect                                           │
+│   • SetClassLongPtrW       • GetCursor                      │
+│   • ShowCursor                                              │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -190,38 +187,18 @@ long hwnd = 0x12345678L; // Native Win32 window handle
 FastCursor.setForWindow(hwnd, CursorType.HAND);
 ```
 
-### 3. Desktop Rectangular & Window Clipping
-
-```java
-import fastcursor.FastCursor;
-
-// 1. Lock mouse cursor to a 500x500 box on screen
-FastCursor.clip(100, 100, 600, 600);
-
-// 2. Or confine cursor directly to window screen bounds (HWND)
-long hwnd = 0x12345678L;
-FastCursor.clipToWindow(hwnd);
-
-// 3. Release cursor confinement across all monitors
-FastCursor.unclip();
-```
-
-### 4. Querying Active Cursor Handle
+### 3. Querying Active Cursor Handle
 
 ```java
 import fastcursor.FastCursor;
 import java.lang.foreign.MemorySegment;
 
-// Save current native cursor handle
-MemorySegment previousCursor = FastCursor.get();
-
-// Mutate cursor temporarily
-FastCursor.set(CursorType.WAIT);
-
-// ... perform tasks ...
+// Get the native HCURSOR handle of the active thread
+MemorySegment hCursor = FastCursor.get();
+System.out.println("Native HCURSOR address: 0x" + Long.toHexString(hCursor.address()));
 ```
 
-### 5. Cursor Visibility (Show / Hide)
+### 4. Cursor Visibility (Show / Hide)
 
 ```java
 import fastcursor.FastCursor;
@@ -241,9 +218,9 @@ FastCursor is rigorously benchmarked via **OpenJDK JMH** to guarantee zero JVM a
 
 | Benchmark / Operation | Throughput (ops/ms) | Ops per Second | Latency |
 |:---|:---:|:---:|:---:|
-| **`benchmarkSetCursorCached`** (IDC handle resolution + `SetCursor`) | **~2,088 ops/ms** | **> 2.08 Million** | **< 480 ns** |
-| **`benchmarkSetCursorSwitch`** (Active shape alternation) | **~1,194 ops/ms** | **> 1.19 Million** | **< 830 ns** |
-| **`benchmarkUnclip`** (Win32 `ClipCursor(NULL)`) | **~1,374 ops/ms** | **> 1.37 Million** | **< 720 ns** |
+| **`benchmarkGetCursorHandle`** (Direct Win32 `GetCursor`) | **~2,704 ops/ms** | **> 2.70 Million** | **< 370 ns** |
+| **`benchmarkSetCursorCached`** (IDC handle resolution + `SetCursor`) | **~1,642 ops/ms** | **> 1.64 Million** | **< 610 ns** |
+| **`benchmarkSetCursorSwitch`** (Active shape alternation) | **~1,473 ops/ms** | **> 1.47 Million** | **< 680 ns** |
 
 *Measured on Windows 11 (x64), JDK 21.0.12.1. Pure Java 21+ Project Panama FFM direct downcalls with 0 bytes GC heap allocation.*
 
@@ -255,6 +232,11 @@ FastCursor is rigorously benchmarked via **OpenJDK JMH** to guarantee zero JVM a
 |---|---|---|---|
 | **Interactive Terminal Demo** | [Demo.java](examples/Demo/src/main/java/fastcursor/Demo.java) | `run-demo.bat` | Cycles through all Win32 system cursor shapes every 3 seconds directly over the console window. |
 | **JMH Microbenchmark Suite** | [Benchmark.java](examples/Benchmark/src/main/java/fastcursor/benchmark/Benchmark.java) | `run-benchmark.bat` | JMH microbenchmark suite measuring Win32 downcall throughput and handle cache performance. |
+
+Run the demo instantly via terminal:
+```cmd
+run-demo.bat
+```
 
 ---
 
@@ -318,7 +300,7 @@ Download the latest compiled JARs directly to add them to your classpath:
 - **[CHANGELOG.md](docs/CHANGELOG.md)**: Detailed version notes and update history.
 - **[REFERENCE.md](docs/REFERENCE.md)**: Complete API manual and method signatures.
 - **[PHILOSOPHY.md](docs/PHILOSOPHY.md)**: The engineering rationale for zero-DLL FFM performance.
-- **[ROADMAP.md](docs/ROADMAP.md)**: Future milestones and planned features (`.ani`/`.cur`, auto-window clipping).
+- **[ROADMAP.md](docs/ROADMAP.md)**: Future milestones and planned features (`.ani`/`.cur` custom cursors).
 - **[COMPILE.md](docs/COMPILE.md)**: Build and preview flags guide.
 
 ---

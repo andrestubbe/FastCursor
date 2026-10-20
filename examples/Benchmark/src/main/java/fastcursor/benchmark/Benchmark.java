@@ -4,6 +4,7 @@ import fastcursor.CursorType;
 import fastcursor.FastCursor;
 import org.openjdk.jmh.annotations.*;
 
+import java.lang.foreign.MemorySegment;
 import java.util.concurrent.TimeUnit;
 
 @BenchmarkMode(Mode.Throughput)
@@ -21,7 +22,6 @@ public class Benchmark {
 
     @TearDown
     public void tearDown() {
-        FastCursor.unclip();
         FastCursor.set(CursorType.ARROW);
     }
 
@@ -36,7 +36,7 @@ public class Benchmark {
     }
 
     @org.openjdk.jmh.annotations.Benchmark
-    public boolean benchmarkUnclip() {
-        return FastCursor.unclip();
+    public MemorySegment benchmarkGetCursorHandle() {
+        return FastCursor.get();
     }
 }

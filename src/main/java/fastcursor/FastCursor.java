@@ -4,7 +4,7 @@ import java.lang.foreign.MemorySegment;
 
 /**
  * <h1>FastCursor</h1>
- * Ultra-fast native Win32 cursor, pointer and clipping management for Java 21+.
+ * Ultra-fast native Win32 cursor and pointer management for Java 21+.
  * <p>
  * Backed by direct Foreign Function &amp; Memory (FFM) system calls to {@code user32.dll}.
  * Zero native DLLs required, zero JNI compilation, instant execution.
@@ -69,38 +69,5 @@ public final class FastCursor {
      */
     public static void hide() {
         NativeUser32Cursor.showCursor(false);
-    }
-
-    /**
-     * Confines mouse cursor movements to a specific rectangle on the primary desktop.
-     * Useful for FPS games, dragging controls, or precision region tools.
-     *
-     * @param left   Left screen pixel
-     * @param top    Top screen pixel
-     * @param right  Right screen pixel
-     * @param bottom Bottom screen pixel
-     * @return true if clipping succeeded, false otherwise
-     */
-    public static boolean clip(int left, int top, int right, int bottom) {
-        return NativeUser32Cursor.clipCursor(left, top, right, bottom);
-    }
-
-    /**
-     * Confines mouse cursor movements to the exact screen bounding rectangle of a native window (HWND).
-     *
-     * @param hwnd Native Win32 window handle
-     * @return true if clipping succeeded, false otherwise
-     */
-    public static boolean clipToWindow(long hwnd) {
-        return NativeUser32Cursor.clipToWindow(hwnd);
-    }
-
-    /**
-     * Releases cursor confinement and restores free desktop movement.
-     *
-     * @return true if unclipped successfully, false otherwise
-     */
-    public static boolean unclip() {
-        return NativeUser32Cursor.unclipCursor();
     }
 }

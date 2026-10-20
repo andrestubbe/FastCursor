@@ -51,34 +51,6 @@ public static void hide()
 ```
 Decrements Windows cursor display counter to hide the mouse cursor completely.
 
-### `clip`
-```java
-public static boolean clip(int left, int top, int right, int bottom)
-```
-Confines mouse cursor movements to a specific rectangle on the primary desktop.
-- **Parameters:**
-  - `left` - Left screen pixel.
-  - `top` - Top screen pixel.
-  - `right` - Right screen pixel.
-  - `bottom` - Bottom screen pixel.
-- **Returns:** `true` if clipping succeeded, `false` otherwise.
-
-### `clipToWindow`
-```java
-public static boolean clipToWindow(long hwnd)
-```
-Confines mouse cursor movements to the exact screen bounding rectangle of a native window (`HWND`).
-- **Parameters:**
-  - `hwnd` - Native Win32 window handle.
-- **Returns:** `true` if clipping succeeded, `false` otherwise.
-
-### `unclip`
-```java
-public static boolean unclip()
-```
-Releases cursor confinement and restores free desktop movement across all screens.
-- **Returns:** `true` if unclipped successfully, `false` otherwise.
-
 ---
 
 ## 2. System Cursor Types (`CursorType`)
@@ -90,7 +62,7 @@ public enum CursorType
 | Constant | IDC Value | Description |
 |:---|:---|:---|
 | `ARROW` | `32512` | Standard arrow cursor (`IDC_ARROW`) |
-| `IBEAM` | `32513` | Text I-beam cursor for editable text (`IDC_IBEAM`) |
+| `IBEAM` | `32513` | Text selection I-beam (`IDC_IBEAM`) |
 | `WAIT` | `32514` | Hourglass / spinner wait cursor (`IDC_WAIT`) |
 | `CROSS` | `32515` | Crosshair cursor for snipping / precision (`IDC_CROSS`) |
 | `APP_STARTING` | `32516` | Standard arrow and small spinning wait circle (`IDC_APPSTARTING`) |
@@ -110,5 +82,5 @@ public enum CursorType
 
 Internal package-private engine managing `java.lang.foreign` Linker calls to `user32.dll`.
 
-- Automatically binds `SetCursor`, `GetCursor`, `LoadCursorW`, `ShowCursor`, `ClipCursor`, `GetWindowRect`, and `SetClassLongPtrW` (with fallback to `SetClassLongW`).
+- Automatically binds `SetCursor`, `GetCursor`, `LoadCursorW`, `ShowCursor`, and `SetClassLongPtrW` (with fallback to `SetClassLongW`).
 - Maintains an internal concurrent lookup cache `CURSOR_CACHE` to avoid repeated `LoadCursorW` Win32 allocations.

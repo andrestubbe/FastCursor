@@ -15,10 +15,8 @@ final class NativeUser32Cursor {
     private static final MethodHandle GET_CURSOR;
     private static final MethodHandle LOAD_CURSOR_W;
     private static final MethodHandle SHOW_CURSOR;
-    private static final MethodHandle CLIP_CURSOR;
     private static final MethodHandle SET_CLASS_LONG_PTR_W;
     private static final MethodHandle GET_CLASS_LONG_PTR_W;
-    private static final MethodHandle GET_WINDOW_RECT;
 
     // GCLP_HCURSOR constant for 64-bit Windows (-12)
     static final int GCLP_HCURSOR = -12;
@@ -31,10 +29,8 @@ final class NativeUser32Cursor {
         MethodHandle getCursor = null;
         MethodHandle loadCursorW = null;
         MethodHandle showCursor = null;
-        MethodHandle clipCursor = null;
         MethodHandle setClassLongPtrW = null;
         MethodHandle getClassLongPtrW = null;
-        MethodHandle getWindowRect = null;
 
         try {
             Linker linker = Linker.nativeLinker();
@@ -64,12 +60,6 @@ final class NativeUser32Cursor {
                             FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_INT)))
                     .orElse(null);
 
-            // BOOL ClipCursor(const RECT *lpRect)
-            clipCursor = user32.find("ClipCursor")
-                    .map(addr -> linker.downcallHandle(addr,
-                            FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.ADDRESS)))
-                    .orElse(null);
-
             // ULONG_PTR SetClassLongPtrW(HWND hWnd, int nIndex, LONG_PTR dwNewLong)
             // On 64-bit Windows, dwNewLong and return are 64-bit (JAVA_LONG / ADDRESS)
             setClassLongPtrW = user32.find("SetClassLongPtrW")
@@ -85,12 +75,6 @@ final class NativeUser32Cursor {
                             FunctionDescriptor.of(ValueLayout.JAVA_LONG, ValueLayout.JAVA_LONG, ValueLayout.JAVA_INT)))
                     .orElse(null);
 
-            // BOOL GetWindowRect(HWND hWnd, LPRECT lpRect)
-            getWindowRect = user32.find("GetWindowRect")
-                    .map(addr -> linker.downcallHandle(addr,
-                            FunctionDescriptor.of(ValueLayout.JAVA_INT, ValueLayout.JAVA_LONG, ValueLayout.ADDRESS)))
-                    .orElse(null);
-
         } catch (Throwable ignored) {
         }
 
@@ -98,10 +82,8 @@ final class NativeUser32Cursor {
         GET_CURSOR = getCursor;
         LOAD_CURSOR_W = loadCursorW;
         SHOW_CURSOR = showCursor;
-        CLIP_CURSOR = clipCursor;
         SET_CLASS_LONG_PTR_W = setClassLongPtrW;
         GET_CLASS_LONG_PTR_W = getClassLongPtrW;
-        GET_WINDOW_RECT = getWindowRect;
     }
 
     private NativeUser32Cursor() {}
@@ -168,47 +150,6 @@ final class NativeUser32Cursor {
             return (long) SET_CLASS_LONG_PTR_W.invokeExact(hwnd, GCLP_HCURSOR, hCursor);
         } catch (Throwable t) {
             return 0;
-        }
-    }
-
-    /**
-     * Confines the cursor to a specific rectangular screen region, or unclips if rect is null.
-     */
-    static boolean clipCursor(int left, int top, int right, int bottom) {
-        if (CLIP_CURSOR == null) return false;
-        try (Arena arena = Arena.ofConfined()) {
-            MemorySegment rect = arena.allocate(ValueLayout.JAVA_INT, 4);
-            rect.set(ValueLayout.JAVA_INT, 0, left);
-            rect.set(ValueLayout.JAVA_INT, 4, top);
-            rect.set(ValueLayout.JAVA_INT, 8, right);
-            rect.set(ValueLayout.JAVA_INT, 12, bottom);
-            return ((int) CLIP_CURSOR.invokeExact(rect)) != 0;
-        } catch (Throwable t) {
-            return false;
-        }
-    }
-
-    static boolean unclipCursor() {
-        if (CLIP_CURSOR == null) return false;
-        try {
-            return ((int) CLIP_CURSOR.invokeExact(MemorySegment.NULL)) != 0;
-        } catch (Throwable t) {
-            return false;
-        }
-    }
-
-    /**
-     * Clips the mouse cursor within the screen bounds of a given window handle (HWND).
-     */
-    static boolean clipToWindow(long hwnd) {
-        if (CLIP_CURSOR == null || GET_WINDOW_RECT == null || hwnd == 0) return false;
-        try (Arena arena = Arena.ofConfined()) {
-            MemorySegment rect = arena.allocate(ValueLayout.JAVA_INT, 4);
-            int res = (int) GET_WINDOW_RECT.invokeExact(hwnd, rect);
-            if (res == 0) return false;
-            return ((int) CLIP_CURSOR.invokeExact(rect)) != 0;
-        } catch (Throwable t) {
-            return false;
         }
     }
 }

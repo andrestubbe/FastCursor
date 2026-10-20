@@ -1,6 +1,7 @@
 package fastcursor;
 
 import org.junit.jupiter.api.Test;
+import java.lang.foreign.MemorySegment;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FastCursorTest {
@@ -28,20 +29,13 @@ class FastCursorTest {
         boolean setArrow = FastCursor.set(CursorType.ARROW);
         assertTrue(setArrow, "Setting standard arrow cursor should succeed on Windows");
 
+        // Query active cursor handle via FastCursor.get()
+        MemorySegment cursorHandle = FastCursor.get();
+        assertNotNull(cursorHandle, "Cursor handle should not be null");
+
         // Show and hide counter calls
         assertDoesNotThrow(FastCursor::show);
         assertDoesNotThrow(FastCursor::hide);
         assertDoesNotThrow(FastCursor::show); // restore visibility
-
-        // Unclip test
-        boolean unclipped = FastCursor.unclip();
-        assertTrue(unclipped, "Unclipping cursor should return true");
-
-        // Get cursor test
-        assertNotNull(FastCursor.get(), "Current cursor segment should not be null");
-
-        // Clip to invalid hwnd test (should return false gracefully)
-        assertFalse(FastCursor.clipToWindow(0), "clipToWindow(0) should return false");
-        assertFalse(FastCursor.clipToWindow(-1), "clipToWindow(-1) should return false");
     }
 }
