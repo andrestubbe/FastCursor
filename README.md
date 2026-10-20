@@ -142,20 +142,20 @@ Standard Java cursor handling via `java.awt.Cursor` or JavaFX is plagued by seve
 
 | Shape | `CursorType` | Win32 Identifier | Description |
 |:---:|:---|:---|:---|
-| <img src="docs/cursors/arrow.svg" width="24" height="24" alt="Arrow"> | `ARROW` | `IDC_ARROW (32512)` | Standard arrow pointer |
-| <img src="docs/cursors/ibeam.svg" width="24" height="24" alt="I-Beam"> | `IBEAM` | `IDC_IBEAM (32513)` | Text selection I-beam |
-| <img src="docs/cursors/wait.svg" width="24" height="24" alt="Wait"> | `WAIT` | `IDC_WAIT (32514)` | Wait / hourglass / spinner |
-| <img src="docs/cursors/cross.svg" width="24" height="24" alt="Cross"> | `CROSS` | `IDC_CROSS (32515)` | Crosshair for snipping and precision selection |
-| <img src="docs/cursors/helpsel.svg" width="24" height="24" alt="App Starting"> | `APP_STARTING` | `IDC_APPSTARTING (32516)` | Arrow with small spinning wait circle |
-| <img src="docs/cursors/link.svg" width="24" height="24" alt="Hand"> | `HAND` | `IDC_HAND (32649)` | Link / button pointer hand |
-| <img src="docs/cursors/move.svg" width="24" height="24" alt="Size All"> | `SIZE_ALL` | `IDC_SIZEALL (32646)` | Four-pointed movement cursor |
-| <img src="docs/cursors/ew.svg" width="24" height="24" alt="Size WE"> | `SIZE_WE` | `IDC_SIZEWE (32644)` | Double-pointed horizontal arrow |
-| <img src="docs/cursors/ns.svg" width="24" height="24" alt="Size NS"> | `SIZE_NS` | `IDC_SIZENS (32645)` | Double-pointed vertical arrow |
-| <img src="docs/cursors/nwse.svg" width="24" height="24" alt="Size NWSE"> | `SIZE_NWSE` | `IDC_SIZENWSE (32642)` | Diagonal NW-SE resize arrow |
-| <img src="docs/cursors/nesw.svg" width="24" height="24" alt="Size NESW"> | `SIZE_NESW` | `IDC_SIZENESW (32643)` | Diagonal NE-SW resize arrow |
-| <img src="docs/cursors/unavail.svg" width="24" height="24" alt="No"> | `NO` | `IDC_NO (32648)` | Prohibited / slashed circle |
-| <img src="docs/cursors/helpsel.svg" width="24" height="24" alt="Help"> | `HELP` | `IDC_HELP (32651)` | Arrow with question mark |
-| <img src="docs/cursors/up.svg" width="24" height="24" alt="Up Arrow"> | `UP_ARROW` | `IDC_UPARROW (32516)` | Upward arrow |
+| <img src="docs/cursors/arrow.png" width="32" height="32" alt="Arrow"> | `ARROW` | `IDC_ARROW (32512)` | Standard arrow pointer |
+| <img src="docs/cursors/ibeam.png" width="32" height="32" alt="I-Beam"> | `IBEAM` | `IDC_IBEAM (32513)` | Text selection I-beam |
+| <img src="docs/cursors/wait.png" width="32" height="32" alt="Wait"> | `WAIT` | `IDC_WAIT (32514)` | Wait / hourglass / spinner |
+| <img src="docs/cursors/cross.png" width="32" height="32" alt="Cross"> | `CROSS` | `IDC_CROSS (32515)` | Crosshair for snipping and precision selection |
+| <img src="docs/cursors/appstarting.png" width="32" height="32" alt="App Starting"> | `APP_STARTING` | `IDC_APPSTARTING (32516)` | Arrow with small spinning wait circle |
+| <img src="docs/cursors/hand.png" width="32" height="32" alt="Hand"> | `HAND` | `IDC_HAND (32649)` | Link / button pointer hand |
+| <img src="docs/cursors/sizeall.png" width="32" height="32" alt="Size All"> | `SIZE_ALL` | `IDC_SIZEALL (32646)` | Four-pointed movement cursor |
+| <img src="docs/cursors/sizewe.png" width="32" height="32" alt="Size WE"> | `SIZE_WE` | `IDC_SIZEWE (32644)` | Double-pointed horizontal arrow |
+| <img src="docs/cursors/sizens.png" width="32" height="32" alt="Size NS"> | `SIZE_NS` | `IDC_SIZENS (32645)` | Double-pointed vertical arrow |
+| <img src="docs/cursors/sizenwse.png" width="32" height="32" alt="Size NWSE"> | `SIZE_NWSE` | `IDC_SIZENWSE (32642)` | Diagonal NW-SE resize arrow |
+| <img src="docs/cursors/sizenesw.png" width="32" height="32" alt="Size NESW"> | `SIZE_NESW` | `IDC_SIZENESW (32643)` | Diagonal NE-SW resize arrow |
+| <img src="docs/cursors/no.png" width="32" height="32" alt="No"> | `NO` | `IDC_NO (32648)` | Prohibited / slashed circle |
+| <img src="docs/cursors/help.png" width="32" height="32" alt="Help"> | `HELP` | `IDC_HELP (32651)` | Arrow with question mark |
+| <img src="docs/cursors/uparrow.png" width="32" height="32" alt="Up Arrow"> | `UP_ARROW` | `IDC_UPARROW (32516)` | Upward arrow |
 
 ---
 

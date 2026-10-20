@@ -18,6 +18,7 @@ final class NativeUser32Cursor {
     private static final MethodHandle CLIP_CURSOR;
     private static final MethodHandle SET_CLASS_LONG_PTR_W;
     private static final MethodHandle GET_CLASS_LONG_PTR_W;
+    private static final MethodHandle GET_WINDOW_RECT;
 
     // GCLP_HCURSOR constant for 64-bit Windows (-12)
     static final int GCLP_HCURSOR = -12;
