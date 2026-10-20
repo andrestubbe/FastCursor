@@ -1,10 +1,10 @@
-# FastCursor 0.1.0 — Ultra-Lightweight Win32 Native Cursor & Pointer Engine for Java
+# FastCursor 0.1.1 — Ultra-Lightweight Win32 Native Cursor & Pointer Engine for Java
 
-[![Status](https://img.shields.io/badge/status-0.1.0-brightgreen.svg)](https://github.com/andrestubbe/FastCursor/releases/tag/0.1.0)
+[![Status](https://img.shields.io/badge/status-0.1.1-brightgreen.svg)](https://github.com/andrestubbe/FastCursor/releases/tag/0.1.1)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-21+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+%20%7C%20Windows%2011%20(x64)-lightgrey.svg)]()
-[![JitPack](https://img.shields.io/badge/JitPack-0.1.0-green.svg)](https://jitpack.io/#andrestubbe/FastCursor)
+[![JitPack](https://img.shields.io/badge/JitPack-0.1.1-green.svg)](https://jitpack.io/#andrestubbe/FastCursor)
 
 ---
 
@@ -233,11 +233,6 @@ FastCursor is rigorously benchmarked via **OpenJDK JMH** to guarantee zero JVM a
 | **Interactive Terminal Demo** | [Demo.java](examples/Demo/src/main/java/fastcursor/Demo.java) | `run-demo.bat` | Cycles through all Win32 system cursor shapes every 3 seconds directly over the console window. |
 | **JMH Microbenchmark Suite** | [Benchmark.java](examples/Benchmark/src/main/java/fastcursor/benchmark/Benchmark.java) | `run-benchmark.bat` | JMH microbenchmark suite measuring Win32 downcall throughput and handle cache performance. |
 
-Run the demo instantly via terminal:
-```cmd
-run-demo.bat
-```
-
 ---
 
 ## Installation
@@ -259,7 +254,7 @@ Add the JitPack repository and the dependency to your `pom.xml`:
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
         <artifactId>FastCursor</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.1</version>
     </dependency>
     <!-- Required Native Platform & FFM Infrastructure -->
     <dependency>
@@ -278,7 +273,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.andrestubbe:FastCursor:0.1.0'
+    implementation 'com.github.andrestubbe:FastCursor:0.1.1'
     implementation 'com.github.andrestubbe:FastCore:0.1.1'
 }
 ```
@@ -287,7 +282,7 @@ dependencies {
 
 Download the latest compiled JARs directly to add them to your classpath:
 
-1. 🎯 **[FastCursor-0.1.0.jar](https://github.com/andrestubbe/FastCursor/releases/download/0.1.0/FastCursor-0.1.0.jar)** (The Core Cursor Engine)
+1. 🎯 **[FastCursor-0.1.1.jar](https://github.com/andrestubbe/FastCursor/releases/download/0.1.1/FastCursor-0.1.1.jar)** (The Core Cursor Engine)
 2. ⚙️ **[FastCore-0.1.1.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.1/FastCore-0.1.1.jar)** (The Native Platform & FFM Loader)
 
 > [!IMPORTANT]

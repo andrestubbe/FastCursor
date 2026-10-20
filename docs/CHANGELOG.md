@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.1] - 2026-10-20
+
+### Changed
+- **Responsibility Isolation**: Delegated all screen and window clipping APIs (`clip`, `clipToWindow`, `unclip`) to `FastMouse`, focusing `FastCursor` entirely on cursor shapes, thread cursors, and window hover bindings.
+- **Added `FastCursor.get()`**: Direct method to retrieve the active calling thread's Win32 `HCURSOR` native memory handle.
+- **Documentation & Benchmarks**: Added full JMH microbenchmark suite (`run-benchmark.bat`) and standardized `Demo.java`.
+
 ## [0.1.0] - 2026-10-20
 
 ### Added

@@ -7,7 +7,7 @@
 
     <groupId>com.github.andrestubbe</groupId>
     <artifactId>FastCursor</artifactId>
-    <version>0.1.0</version>
+    <version>0.1.1</version>
     <packaging>jar</packaging>
 
     <name>FastCursor</name>
