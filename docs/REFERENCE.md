@@ -34,10 +34,38 @@ Binds a standard cursor permanently to a native Win32 window (`HWND`). Windows a
 
 ### `get`
 ```java
-public static MemorySegment get()
+public static long get()
 ```
 Returns the native Win32 cursor handle (`HCURSOR`) of the calling thread.
-- **Returns:** `MemorySegment` wrapping the native `HCURSOR` pointer address.
+- **Returns:** 64-bit integer pointer address (`long`) representing the native `HCURSOR`.
+
+### `captureCursor`
+```java
+public static CursorShape captureCursor()
+```
+Captures the currently active Win32 cursor, including position, hot-spot coordinates, width, height, and ARGB pixel buffer.
+- **Returns:** `CursorShape` record or `null` if capture unavailable.
+
+### `blendCursor`
+```java
+public static boolean blendCursor(int[] pixels, int screenWidth, int screenHeight, int offsetX, int offsetY, boolean captureHidden)
+```
+Blends the live cursor shape directly into an existing ARGB/BGRA frame pixel array with proper alpha channel compositing.
+- **Parameters:**
+  - `pixels`: Target frame buffer.
+  - `screenWidth`: Frame width.
+  - `screenHeight`: Frame height.
+  - `offsetX`: Screen X-origin offset.
+  - `offsetY`: Screen Y-origin offset.
+  - `captureHidden`: Whether to blend when the cursor is logically hidden.
+- **Returns:** `true` if cursor was successfully captured and blended, `false` otherwise.
+
+### `isCaptureAvailable`
+```java
+public static boolean isCaptureAvailable()
+```
+Checks if the native cursor capture library (`fastcursor.dll`) is loaded and operational.
+- **Returns:** `true` if capture is available.
 
 ### `show`
 ```java

@@ -1,7 +1,6 @@
 package fastcursor;
 
 import org.junit.jupiter.api.Test;
-import java.lang.foreign.MemorySegment;
 import static org.junit.jupiter.api.Assertions.*;
 
 class FastCursorTest {
@@ -30,8 +29,8 @@ class FastCursorTest {
         assertTrue(setArrow, "Setting standard arrow cursor should succeed on Windows");
 
         // Query active cursor handle via FastCursor.get()
-        MemorySegment cursorHandle = FastCursor.get();
-        assertNotNull(cursorHandle, "Cursor handle should not be null");
+        long cursorHandle = FastCursor.get();
+        assertNotEquals(0L, cursorHandle, "Cursor handle should not be zero");
 
         // Show and hide counter calls
         assertDoesNotThrow(FastCursor::show);

@@ -1,16 +1,18 @@
-# FastCursor 0.1.1 — Ultra-Lightweight Win32 Native Cursor & Pointer Engine for Java
+# FastCursor 0.1.2 — Ultra-Lightweight Win32 Native Cursor & Pointer Engine for Java
 
-[![Status](https://img.shields.io/badge/status-0.1.1-brightgreen.svg)](https://github.com/andrestubbe/FastCursor/releases/tag/0.1.1)
+[![Status](https://img.shields.io/badge/status-0.1.2-brightgreen.svg)](https://github.com/andrestubbe/FastCursor/releases/tag/0.1.2)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Java](https://img.shields.io/badge/Java-21+-blue.svg)](https://www.java.com)
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010+%20%7C%20Windows%2011%20(x64)-lightgrey.svg)]()
-[![JitPack](https://img.shields.io/badge/JitPack-0.1.1-green.svg)](https://jitpack.io/#andrestubbe/FastCursor)
+[![JitPack](https://img.shields.io/badge/JitPack-0.1.2-green.svg)](https://jitpack.io/#andrestubbe/FastCursor)
 
 ---
 
-**🎯 Ultra-fast native Win32 cursor and pointer shape management for Java 21+ via Foreign Function & Memory (FFM).**
+**🎯 Ultra-fast native Win32 cursor pointer shape management, capture, and alpha blending for Java.**
 
-**FastCursor** replaces bulky AWT abstractions and legacy JNI DLL wrappers with direct, sub-microsecond Win32 `user32.dll` system calls. It offers instant thread cursor mutation, permanent window-class (`HWND`) cursor binding on hover, handle inspection (`get()`), and cursor visibility controls with zero native compilation.
+**FastCursor** delivers dual capabilities for high-performance Java applications:
+1. **Pointer Mutation:** Sub-microsecond Win32 `user32.dll` cursor changes (`set`, `setForWindow`, `get`, `show`, `hide`) with zero preview flags.
+2. **Cursor Capture & Blending:** Real-time extraction of the active OS mouse cursor (`captureCursor`) and hardware-accelerated alpha blending (`blendCursor`) directly into screen-recording and streaming frame buffers.
 
 ---
 
@@ -25,12 +27,16 @@ public class QuickStart {
         // 1. Immediately change active thread cursor to WAIT spinner
         FastCursor.set(CursorType.WAIT);
 
-        // 2. Query native Win32 HCURSOR memory segment
-        var hCursor = FastCursor.get();
-        System.out.println("Active HCURSOR: " + hCursor);
+        // 2. Query native Win32 HCURSOR address
+        long hCursor = FastCursor.get();
+        System.out.println("Active HCURSOR: 0x" + Long.toHexString(hCursor));
 
         // 3. Restore default arrow
         FastCursor.set(CursorType.ARROW);
+
+        // 4. Alpha-blend cursor into a frame buffer (for streaming/capture)
+        int[] framePixels = new int[1920 * 1080];
+        FastCursor.blendCursor(framePixels, 1920, 1080, 0, 0, false);
     }
 }
 ```
@@ -97,7 +103,7 @@ Standard Java cursor handling via `java.awt.Cursor` or JavaFX is plagued by seve
 
 ## Real-World Use Cases
 
-- ✂️ **Desktop Snipping & Region Select ([FastScreenCapture](https://github.com/andrestubbe/FastScreenCapture))**: Instant switch to high-precision crosshair (`IDC_CROSS`) with zero frame delay.
+- 🎮 **Desktop Streaming & Capture ([FastVideoStream](https://github.com/andrestubbe/FastVideoStream))**: Real-time cursor alpha blending into video pipelines via `FastCursor.blendCursor(...)` without frame jitter.
 - 🎨 **Canvas, Diagramming & CAD ([FastGUI](https://github.com/andrestubbe/FastGUI))**: Native resize pointers (`IDC_SIZEWE`, `IDC_SIZENS`, `IDC_SIZENWSE`, `IDC_SIZEALL`) that feel 100% native and responsive even during heavy background rendering.
 - 🪟 **Window Hover Feedback ([FastWindow](https://github.com/andrestubbe/FastWindow))**: Bind custom cursors per window handle (`setForWindow`) for effortless interaction cues.
 - ⏳ **Background Task Indication**: Immediate system spinner (`IDC_WAIT` / `IDC_APPSTARTING`) triggered on the calling thread without EDT queue contention.
@@ -191,11 +197,10 @@ FastCursor.setForWindow(hwnd, CursorType.HAND);
 
 ```java
 import fastcursor.FastCursor;
-import java.lang.foreign.MemorySegment;
 
-// Get the native HCURSOR handle of the active thread
-MemorySegment hCursor = FastCursor.get();
-System.out.println("Native HCURSOR address: 0x" + Long.toHexString(hCursor.address()));
+// Get the native HCURSOR handle of the active thread (long address)
+long hCursor = FastCursor.get();
+System.out.println("Native HCURSOR address: 0x" + Long.toHexString(hCursor));
 ```
 
 ### 4. Cursor Visibility (Show / Hide)
@@ -254,13 +259,13 @@ Add the JitPack repository and the dependency to your `pom.xml`:
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
         <artifactId>FastCursor</artifactId>
-        <version>0.1.1</version>
+        <version>0.1.2</version>
     </dependency>
-    <!-- Required Native Platform & FFM Infrastructure -->
+    <!-- Required Native Platform Infrastructure -->
     <dependency>
         <groupId>com.github.andrestubbe</groupId>
         <artifactId>FastCore</artifactId>
-        <version>0.1.1</version>
+        <version>0.1.0</version>
     </dependency>
 </dependencies>
 ```
@@ -273,8 +278,8 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.andrestubbe:FastCursor:0.1.1'
-    implementation 'com.github.andrestubbe:FastCore:0.1.1'
+    implementation 'com.github.andrestubbe:FastCursor:0.1.2'
+    implementation 'com.github.andrestubbe:FastCore:0.1.0'
 }
 ```
 
@@ -282,8 +287,8 @@ dependencies {
 
 Download the latest compiled JARs directly to add them to your classpath:
 
-1. 🎯 **[FastCursor-0.1.1.jar](https://github.com/andrestubbe/FastCursor/releases/download/0.1.1/FastCursor-0.1.1.jar)** (The Core Cursor Engine)
-2. ⚙️ **[FastCore-0.1.1.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.1/FastCore-0.1.1.jar)** (The Native Platform & FFM Loader)
+1. 🎯 **[FastCursor-0.1.2.jar](https://github.com/andrestubbe/FastCursor/releases/download/0.1.2/FastCursor-0.1.2.jar)** (The Core Cursor Engine)
+2. ⚙️ **[FastCore-0.1.0.jar](https://github.com/andrestubbe/FastCore/releases/download/0.1.0/FastCore-0.1.0.jar)** (The Native Platform Loader)
 
 > [!IMPORTANT]
 > When executing on Java 21+, add the JVM arguments `--enable-preview --enable-native-access=ALL-UNNAMED` to permit direct Foreign Function & Memory (FFM) system calls.

@@ -7,11 +7,11 @@
 
     <groupId>com.github.andrestubbe</groupId>
     <artifactId>FastCursor</artifactId>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <packaging>jar</packaging>
 
     <name>FastCursor</name>
-    <description>Ultra-lightweight Win32 Native Cursor &amp; Pointer Management Engine for Java 21+ via FFM (Zero JNI / Zero DLL).</description>
+    <description>Ultra-lightweight Win32 Native Cursor &amp; Pointer Management Engine for Java 21+.</description>
     <url>https://github.com/andrestubbe/FastCursor</url>
 
     <properties>
@@ -50,11 +50,11 @@
     </repositories>
 
     <dependencies>
-        <!-- FastCore - Unified Native Platform & FFM Infrastructure -->
+        <!-- FastCore - Unified Native Platform Infrastructure -->
         <dependency>
             <groupId>com.github.andrestubbe</groupId>
             <artifactId>FastCore</artifactId>
-            <version>0.1.1</version>
+            <version>0.1.0</version>
         </dependency>
 
         <dependency>
@@ -73,18 +73,12 @@
                 <version>3.11.0</version>
                 <configuration>
                     <release>21</release>
-                    <compilerArgs>
-                        <arg>--enable-preview</arg>
-                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.2.5</version>
-                <configuration>
-                    <argLine>--enable-preview --enable-native-access=ALL-UNNAMED</argLine>
-                </configuration>
             </plugin>
         </plugins>
     </build>

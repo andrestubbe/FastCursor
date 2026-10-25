@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [0.1.2] - 2026-10-25
+
+### Added
+- **Native Cursor Capture & Blending**: Added Win32 native cursor capture engine (`fastcursor.dll` via `FastCore.loadLibrary`).
+  - `FastCursor.captureCursor()`: Queries current cursor icon, hotspots, dimensions, and shape.
+  - `FastCursor.blendCursor(int[] pixels, int screenWidth, int screenHeight, int offsetX, int offsetY, boolean captureHidden)`: Hardware-accelerated alpha blending of live cursor straight into screen frame buffers.
+  - `FastCursor.isCaptureAvailable()`: Verification probe for native capture capabilities.
+- **Unit & Integration Tests**: Added `CursorCaptureTest` validating shape extraction and alpha compositing.
+
+### Changed
+- **JNI Architecture Transition**: Replaced Java 21 preview FFM in `NativeUser32Cursor.java` with standard JNI downcalls, eliminating `--enable-preview` requirements for all downstream modules.
+- **Clean Java 21 Compatibility**: Compiles cleanly with zero compiler preview flags.
+
 ## [0.1.1] - 2026-10-20
 
 ### Changed
