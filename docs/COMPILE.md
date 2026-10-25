@@ -7,7 +7,7 @@
 - **Betriebssystem**: Windows 10 (Build 19041+) oder Windows 11 (x64)
 
 > [!NOTE]
-> FastCursor nutzt das moderne **Java Foreign Function & Memory (FFM) API** (Project Panama). Es ist **kein** C/C++ Compiler (wie MSVC oder GCC) erforderlich! Es werden zur Laufzeit keine externen C-DLLs kompiliert oder benötigt.
+> FastCore extrahiert und bindet fastcursor.dll automatisch ein.
 
 ---
 
@@ -33,13 +33,13 @@ Die fertige JAR-Datei liegt anschließend unter `target/FastCursor-0.1.0.jar`.
 
 ---
 
-## Java 21+ FFM Preview Flags
+## Java 21+ Standard Runtime
 
-Beim Kompilieren und Ausführen von Projekten, die native FFM-Aufrufe verwenden, müssen die entsprechenden Preview- und Native-Access-Argumente an die JVM übergeben werden:
+FastCursor benötigt **keine** --enable-preview Flags und kann direkt auf jeder Standard-JVM ab Java 21 ausgeführt werden:
 
 ```bash
 # Beim Starten einer Anwendung:
-java --enable-preview --enable-native-access=ALL-UNNAMED -cp target/FastCursor-0.1.0.jar YourApp
+java -cp target/FastCursor-0.1.2.jar YourApp
 ```
 
 In Maven übernimmt dies automatisch die Konfiguration des `maven-compiler-plugin` und `maven-surefire-plugin` in der `pom.xml`.

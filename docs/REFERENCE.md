@@ -1,6 +1,6 @@
 # FastCursor API Reference Manual
 
-`FastCursor` provides high-performance native Win32 cursor and pointer management for Java 21+ via Foreign Function & Memory (FFM) with zero native compilation and zero DLL overhead.
+FastCursor provides high-performance native Win32 cursor and pointer management for Java 21+ via native C++ JNI with zero preview flags and sub-microsecond latency.
 
 ---
 
@@ -106,9 +106,9 @@ public enum CursorType
 
 ---
 
-## 3. Low-Level FFM Bindings (`NativeUser32Cursor`)
+## 3. Low-Level Native JNI Bindings (NativeUser32Cursor)
 
-Internal package-private engine managing `java.lang.foreign` Linker calls to `user32.dll`.
+Internal package-private engine dispatching directly to native fastcursor.dll and user32.dll.
 
 - Automatically binds `SetCursor`, `GetCursor`, `LoadCursorW`, `ShowCursor`, and `SetClassLongPtrW` (with fallback to `SetClassLongW`).
 - Maintains an internal concurrent lookup cache `CURSOR_CACHE` to avoid repeated `LoadCursorW` Win32 allocations.

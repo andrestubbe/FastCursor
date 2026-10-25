@@ -9,13 +9,13 @@ Traditionell abstrahiert die Java Virtual Machine Betriebssystem-Eigenschaften h
 - **Kein Clipping-Support**: Die Win32-API bietet mit `ClipCursor` ein mächtiges primitives Werkzeug, um den Mauszeiger in exakten Bildschirm-Rechtecken einzusperren (essenziell für FPS-Kamerasteuerungen, Canvas-Drag-Operationen und Zeichenwerkzeuge). Java bot hierfür ab Werk schlichtweg keine native Möglichkeit.
 - **DLL- und JNI-Altlasten**: Bisherige Lösungen für Windows-APIs setzten auf schwergewichtige JNA-Wrappern oder handkompilierte C/C++ JNI-DLLs, die mitgeliefert, entpackt und gepflegt werden mussten.
 
-**FastCursor** löst dieses Dilemma durch die Nutzung der modernen **Foreign Function & Memory (FFM) API** (Java 21+): Direkter, nativer Aufruf von `user32.dll` ohne eine einzige Zeile C/C++-Code und ohne externe DLL-Abhängigkeiten.
+**FastCursor** löst dieses Dilemma durch eine ultra-schlanke **native Win32 C++ & JNI Engine**, die nahtlos auf Java 21+ Standard-Runtimes läuft – ohne Preview-Flags und ohne JNA-Overhead.
 
 ---
 
 ## 2. Die Kernsäulen von FastCursor
 
-### I. Pure Java 21+ Project Panama (Zero-DLL / Zero-JNI)
+### I. Ultra-Fast Native Win32 C++ & JNI Subsystem
 FastCursor benötigt keine native `.dll` auf der Festplatte. Über `Linker.nativeLinker()` und `SymbolLookup.libraryLookup("user32.dll")` bindet FastCursor Win32-Systemfunktionen direkt als `MethodHandle` zur Laufzeit ein. Die JVM generiert daraus Maschinencode, der direkt auf Assembler-Ebene die Windows-Systemaufrufe ausführt.
 
 ### II. Sub-Mikrosekunden-Latenz & Handle-Caching
